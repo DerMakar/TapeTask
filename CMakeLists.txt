@@ -10,3 +10,11 @@ add_executable(tape_sort
         src/tapeinter.h
         src/tapesort.cpp src/tapesort.h
         src/exceptions.cpp src/exceptions.h)
+
+        add_executable(tape_test
+        src/main.cpp
+        src/tape.cpp src/tape.h
+        src/tapeinter.h
+        src/tapesort.cpp src/tapesort.h
+        src/exceptions.cpp src/exceptions.h
+        src/tests.h)
