@@ -34,6 +34,16 @@ void TestReadFile() {
 	size_t data_length = 3;
 	assert(tape.ReadData(data_length) == std::vector<int> (data.begin(), data.begin() + data_length));
 	assert(tape.ReadFirstElement() == 2);
+	size_t ignor = tape.MoveTape(0, 3);
+	assert(tape.ReadData(ignor, 2) == std::vector<int>({7, 5}));
+
+	try {
+		ignor = tape.MoveTape(0, data.size());
+		auto v = tape.ReadData(ignor, 2);
+	}
+	catch (const yadro::EmptyDataExcept& exc) {
+	}
+
 	std::filesystem::remove("..\\..\\tests\\" + filename);
 }
 

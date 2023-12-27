@@ -20,11 +20,21 @@ namespace yadro {
 	}
 
 	std::vector<int> DataTape::ReadData(size_t data_length) const {
+		try {
+			return ReadData(0, data_length);
+		}
+		catch (const std::exception& exc) {
+			throw;
+		}
+	}
+
+	std::vector<int> DataTape::ReadData(size_t ignore_length, size_t data_length) const {
 		std::ifstream input(file_name_);
 		if (input.is_open()) {
 			std::vector<int> data;
 			std::string str_el;
 			size_t curr_num_of_elems = 0;
+			input.ignore(ignore_length);
 			while (curr_num_of_elems < data_length) {
 				char c = static_cast<char> (input.get());
 
@@ -91,5 +101,37 @@ namespace yadro {
 			throw OpenFileExcept();
 		}
 	}
+
+	size_t DataTape::MoveTape(size_t start_pos, size_t num_of_ingnores) const {
+		std::ifstream input(file_name_);
+		if (input.is_open()) {
+			std::string str_el;
+			size_t curr_num_of_elems = 0;
+			size_t ignore_length = 0;
+			input.ignore(start_pos);
+			while (curr_num_of_elems < num_of_ingnores) {
+				char c = static_cast<char> (input.get());
+
+				if (input.eof()) break;
+				
+				ignore_length++;
+				
+				if (c == ' ') {
+					curr_num_of_elems++;
+					continue;
+				}
+			}
+			
+			input.close();
+
+			if (ignore_length == 0) throw EmptyDataExcept();
+
+			return ignore_length;
+		}
+		else {
+			throw OpenFileExcept();
+		}
+	}
+	
 
 }//namespace yadro

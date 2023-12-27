@@ -76,11 +76,13 @@ namespace yadro {
 		std::ofstream output(output_tape_.file_name_);
 		if (output.is_open()) {
 			std::unordered_map<size_t, int> tmp_tapes_firsts;
+			std::unordered_map<size_t, size_t> tmp_tapes_ignores;
 			size_t tmp_index = 1;
 			while (tmp_index <= num_of_tmp_tapes) {
 				DataTape tmp_tape(tmp_tapes_dir + "tmp_" + std::to_string(tmp_index) + ".txt");
 				try {
 					tmp_tapes_firsts[tmp_index] = tmp_tape.ReadFirstElement();
+					tmp_tapes_ignores[tmp_index] = 0;
 				}
 				catch (const std::exception& exc) {
 					throw;
@@ -104,8 +106,8 @@ namespace yadro {
 				DataTape tmp_tape(tmp_tapes_dir + "tmp_" + std::to_string(min_first.first) + ".txt");
 
 				try {
-					tmp_tape.EraseFirstElement();
-					tmp_tapes_firsts[min_first.first] = tmp_tape.ReadFirstElement();
+					tmp_tapes_ignores[min_first.first] += tmp_tape.MoveTape(tmp_tapes_ignores[min_first.first], 1);
+					tmp_tapes_firsts[min_first.first] = tmp_tape.ReadData(tmp_tapes_ignores[min_first.first], 1)[0];					
 				}
 				catch (const EmptyDataExcept& exc) {
 					tmp_tapes_firsts.erase(min_first.first);
